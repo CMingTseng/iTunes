@@ -3,16 +3,67 @@ buildscript {
     ext {
         android_gradle_plugin_version = '4.1.2'
         kotlin_version = "1.4.32"
+
+        //Jetpack Compose
+        //ComposeOptions.kotlinCompilerVersion is deprecated. Compose now uses the kotlin compiler defined in your buildscript.
+//        android_compose_appcompat_version = '1.3.0-beta01'
+//        android_compose_activity_version = '1.3.0-alpha02' // 1.3.0-alpha04 1.3.0-alpha05 1.3.0-alpha07
+        compose_version = '1.0.0-beta05'//1.0.0-beta03 <---> kotlin 1.4.31 / 1.0.0-beta04 <---> kotlin 1.4.32 <-->1.0.0-beta05
+        compose_activity_version = '1.3.0-alpha07'   // 1.3.0-alpha04 1.3.0-alpha05 1.3.0-alpha07
+        compose_appcompat_version = '1.3.0-beta01'   // 1.3.0-beta01
+        compose_constraintlayout_version = '1.0.0-alpha05'
+        compose_navigation_version = '1.0.0-alpha10'//1.0.0-alpha10
+        compose_lifecycle_version = '1.0.0-alpha04'//1.0.0-alpha04
+        compose_accompanist = "0.8.0"
+
+        //Compose for Desktop -- JB version
+        ////Ref :
+//        - [Multiplatform](https://plugins.gradle.org/plugin/org.jetbrains.kotlin.multiplatform) - Kotlin Multiplatform
+
+//// Ref :
+//        - [Decompose](https://github.com/arkivanov/Decompose) - navigation and lifecycle
+//        - [MVIKotlin](https://github.com/arkivanov/MVIKotlin) - presentation and business logic
+//        - [Reaktive](https://github.com/badoo/Reaktive) - background processing and data transformation
+//        - [SQLDelight](https://github.com/cashapp/sqldelight) - data storage
+//          jb_compose_version = '0.3.2' //This version (1.0.0-beta02) of the Compose Compiler !! kotlin_version 1.4.31 <--> jb_compose 0.3.2
+        jb_compose_version = '0.4.0-build184'//'0.4.0-build183
     }
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
+        maven { url 'https://www.jitpack.io' }
+        //JB_Kotlin_Multiplatform
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url = 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+        }
+        //JB_Compose
+        maven {
+            url = "https://maven.pkg.jetbrains.space/public/p/compose/dev"
+        }
+        maven {
+            url = "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+        maven {
+            url = "https://androidx.dev/snapshots/builds/artifacts/repository/"
+        }
+        maven { url 'https://dl.bintray.com/bashor/test' }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
+        maven {
+            url = "https://dl.bintray.com/kotlin/kotlin-eap"
+        }
+        gradlePluginPortal()
         jcenter()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+//        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        //JB_Compose
+        classpath "org.jetbrains.compose:compose-gradle-plugin:$jb_compose_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -22,8 +73,47 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
+        maven { url 'https://www.jitpack.io' }
+        //JB_Kotlin_Multiplatform
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url = 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+        }
+        //JB_Compose
+        maven {
+            url = "https://maven.pkg.jetbrains.space/public/p/compose/dev"
+        }
+        maven {
+            url = "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+        maven {
+            url = "https://androidx.dev/snapshots/builds/artifacts/repository/"
+        }
+        maven { url 'https://dl.bintray.com/bashor/test' }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
+        maven {
+            url = "https://dl.bintray.com/kotlin/kotlin-eap"
+        }
+        gradlePluginPortal()
         jcenter()
     }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            freeCompilerArgs += ["-Xskip-prerelease-check", "-progressive" ]
+            freeCompilerArgs += "-Xopt-in=kotlin.Experimental"
+            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+            freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+            useIR = true
+            allWarningsAsErrors = false
+        }
+    }
+
 }
 
 task clean(type: Delete) {
