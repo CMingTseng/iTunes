@@ -66,6 +66,7 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion "$compose_version"
+        kotlinCompilerVersion "$kotlin_version"
     }
 }
 
@@ -150,8 +151,8 @@ dependencies {
     // Paging
     // Ref : https://proandroiddev.com/infinite-lists-with-paging-3-in-jetpack-compose-b095533aefe6
     // Ref : https://github.com/2307vivek/PagingCompose-Sample
-    implementation "androidx.paging:paging-runtime-ktx:3.0.0-rc01"
-
+    implementation "androidx.paging:paging-runtime-ktx:3.0.0"
+    implementation "androidx.paging:paging-compose:$paging_compose_version"
 
 
     // Glide
