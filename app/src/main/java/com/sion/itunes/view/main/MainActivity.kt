@@ -7,6 +7,8 @@ import android.view.Menu
 import android.widget.SearchView
 import androidx.paging.ExperimentalPagingApi
 import com.sion.itunes.R
+import com.sion.itunes.databinding.ActivityMainBinding
+import com.sion.itunes.databinding.FragmentMusicBinding
 import com.sion.itunes.view.base.BaseActivity
 import com.sion.itunes.view.music.MusicFragment
 import org.koin.core.component.KoinApiExtension
@@ -14,10 +16,12 @@ import org.koin.core.component.KoinApiExtension
 @KoinApiExtension
 @ExperimentalPagingApi
 class MainActivity : BaseActivity() {
-
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView( view)
 
         navigateTo(MusicFragment())
     }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.sion.itunes.R
+import com.sion.itunes.databinding.ItemMusicBinding
 import com.sion.itunes.model.vo.Music
 
 class MusicAdapter(private val musicFuncItem: MusicFuncItem) :
@@ -27,14 +28,12 @@ class MusicAdapter(private val musicFuncItem: MusicFuncItem) :
         }
     }
 
-    override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
-        getItem(position)?.run { holder.onBind(this, musicFuncItem) }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicViewHolder {
+        val itemBinding = ItemMusicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MusicViewHolder(itemBinding )
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicViewHolder {
-        return MusicViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_music, parent, false)
-        )
+    override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
+        getItem(position)?.run { holder.onBind(this, musicFuncItem) }
     }
 }

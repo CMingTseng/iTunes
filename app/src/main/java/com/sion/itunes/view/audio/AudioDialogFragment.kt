@@ -4,13 +4,17 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
 import com.bumptech.glide.Glide
 import com.sion.itunes.R
+import com.sion.itunes.databinding.FragmentAudioBinding
+import com.sion.itunes.databinding.FragmentMusicBinding
 import com.sion.itunes.model.vo.Music
 import com.sion.itunes.view.base.BaseDialogFragment
-import kotlinx.android.synthetic.main.fragment_audio.*
+
 import timber.log.Timber
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -21,29 +25,44 @@ class AudioDialogFragment(val music: Music) : BaseDialogFragment() {
 
     private lateinit var mediaPlayer: MediaPlayer
 
-    private val mainHandler by lazy { Handler(Looper.getMainLooper())}
+    private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
     private lateinit var runnable: Runnable
+    private var _binding: FragmentAudioBinding? = null
+
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentAudioBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         Glide.with(requireContext()).load(music.artworkUrl100).placeholder(R.drawable.record)
-            .into(iv_cover)
-        tv_artist_name.text = music.artistName
-        tv_track_name.text = music.trackName
+            .into(binding.ivCover)
 
-        iv_close.setOnClickListener { dismiss() }
+        binding.tvArtistName.text = music.artistName
+        binding.tvTrackName.text = music.trackName
 
-        ib_control.setOnClickListener {
+        binding.ivClose.setOnClickListener { dismiss() }
+
+        binding.ibControl.setOnClickListener {
             if (mediaPlayer.isPlaying) {
-                ib_control.setImageResource(R.drawable.play)
+                binding.ibControl.setImageResource(R.drawable.play)
                 mediaPlayer.pause()
             } else {
-                ib_control.setImageResource(R.drawable.pause)
+                binding.ibControl.setImageResource(R.drawable.pause)
                 mediaPlayer.start()
             }
         }
 
-        seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 takeIf { fromUser }?.run {
                     val ms = mediaPlayer.duration * (progress / 100.toDouble())
@@ -58,8 +77,8 @@ class AudioDialogFragment(val music: Music) : BaseDialogFragment() {
         runnable = Runnable {
             val progress =
                 ((mediaPlayer.currentPosition.toDouble() / mediaPlayer.duration) * 100).toInt()
-            seek_bar.progress = progress
-            tv_current_time.text = formatDuration(mediaPlayer.currentPosition)
+            binding.seekBar.progress = progress
+            binding.tvCurrentTime.text = formatDuration(mediaPlayer.currentPosition)
             mainHandler.postDelayed(runnable, 1000)
         }
 
@@ -68,6 +87,7 @@ class AudioDialogFragment(val music: Music) : BaseDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
         stopAndRelease(mediaPlayer)
         mainHandler.removeCallbacks(runnable)
     }
@@ -80,14 +100,14 @@ class AudioDialogFragment(val music: Music) : BaseDialogFragment() {
             mp.setDataSource(music.previewUrl)
             mp.prepareAsync()
             mp.setOnPreparedListener {
-                progress_bar.visibility = View.GONE
-                tv_duration.text = formatDuration(mediaPlayer.duration)
+                binding.progressBar.visibility = View.GONE
+                binding.tvDuration.text = formatDuration(mediaPlayer.duration)
                 it.start()
-                ib_control.setImageResource(R.drawable.pause)
+                binding.ibControl.setImageResource(R.drawable.pause)
                 mainHandler.post(runnable)
             }
             mp.setOnCompletionListener {
-                ib_control.setImageResource(R.drawable.play)
+                binding.ibControl.setImageResource(R.drawable.play)
             }
         }
     }

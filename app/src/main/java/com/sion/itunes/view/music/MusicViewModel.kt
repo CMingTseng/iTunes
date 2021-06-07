@@ -10,7 +10,6 @@ import com.sion.itunes.view.base.BaseViewModel
 import com.sion.itunes.view.music.repository.MusicPagingSource
 import com.sion.itunes.view.music.repository.PageKeyedRemoteMediator
 import kotlinx.coroutines.flow.Flow
-import org.koin.core.component.KoinApiExtension
 
 @ExperimentalPagingApi
 class MusicViewModel(
