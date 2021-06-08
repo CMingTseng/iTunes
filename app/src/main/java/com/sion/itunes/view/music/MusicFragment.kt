@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
@@ -38,14 +42,14 @@ class MusicFragment(private val keyword: String = "pop") : BaseFragment() {
 
     private val loadStateListener = { loadStatus: CombinedLoadStates ->
         when (loadStatus.refresh) {
-            is LoadState.Error -> {
-                showDialog()
-                binding.progressBar.visibility = View.GONE
-            }
-            is LoadState.Loading -> binding.progressBar.visibility = View.VISIBLE
-            is LoadState.NotLoading -> {
-                binding.progressBar.visibility = View.GONE
-            }
+//            is LoadState.Error -> {
+//                showDialog()
+//                binding.progressBar.visibility = View.GONE
+//            }
+//            is LoadState.Loading -> binding.progressBar.visibility = View.VISIBLE
+//            is LoadState.NotLoading -> {
+//                binding.progressBar.visibility = View.GONE
+//            }
         }
         when (loadStatus.append) {
             is LoadState.Error -> {
@@ -70,15 +74,22 @@ class MusicFragment(private val keyword: String = "pop") : BaseFragment() {
     ): View? {
         _binding = FragmentMusicBinding.inflate(inflater, container, false)
         val view = binding.root
+        binding.composeview.setContent {
+            MaterialTheme {
+                Surface {
+                    Text(text = "Hello!",color = Color.Black)
+                }
+            }
+        }
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvMusic.takeIf { it.adapter == null }?.let {
-            it.adapter = musicAdapter.withLoadStateFooter(BaseLoadStateAdapter())
-            search()
-        }
+//        binding.rvMusic.takeIf { it.adapter == null }?.let {
+//            it.adapter = musicAdapter.withLoadStateFooter(BaseLoadStateAdapter())
+//            search()
+//        }
     }
 
     private fun search(key: String = keyword) {
