@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.Text
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.ExperimentalPagingApi
@@ -70,7 +73,11 @@ class MusicFragment(private val keyword: String = "pop") : BaseFragment() {
     ): View? {
         _binding = FragmentMusicBinding.inflate(inflater, container, false)
         val view = binding.root
-        return view
+        return ComposeView(requireContext()).apply {
+            setContent {
+                Text(text = "Hello world.",color = Color.White )
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
