@@ -14,6 +14,7 @@ import androidx.paging.LoadState
 import com.sion.itunes.R
 import com.sion.itunes.databinding.FragmentAudioBinding
 import com.sion.itunes.databinding.FragmentMusicBinding
+import com.sion.itunes.theme.PagingComposeTheme
 import com.sion.itunes.view.audio.AudioDialogFragment
 import com.sion.itunes.view.base.BaseFragment
 import com.sion.itunes.view.base.footer.BaseLoadStateAdapter
@@ -75,7 +76,9 @@ class MusicFragment(private val keyword: String = "pop") : BaseFragment() {
         val view = binding.root
         return ComposeView(requireContext()).apply {
             setContent {
-                Text(text = "Hello world.",color = Color.White )
+                PagingComposeTheme {
+                   MusicScreen(keyword,viewModel)
+                }
             }
         }
     }

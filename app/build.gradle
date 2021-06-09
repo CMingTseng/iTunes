@@ -157,13 +157,40 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$compose_appcompat_version"
     implementation "androidx.activity:activity-compose:$compose_activity_version"
     implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui-util:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
+
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    implementation "androidx.compose.foundation:foundation-layout:$compose_version"
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.constraintlayout:constraintlayout-compose:$compose_constraintlayout_version"
+    // ...compiler and runtime from previous code snippet
+    implementation "androidx.compose.runtime:runtime:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+
+
+
+    implementation "androidx.compose.animation:animation:$compose_version"
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:$compose_navigation_version"
+
+
+    implementation "androidx.compose.ui:ui-viewbinding:$compose_version"
+
+    // Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$compose_lifecycle_version"
+
 
 //    implementation group: 'com.google.android.material', name: 'compose-theme-adapter', version: '1.0.0-beta07'
 
-    implementation "dev.chrisbanes.accompanist:accompanist-coil:$compose_utils_chrisbanes_coil"
-////    implementation "io.coil-kt:coil:$compose_utils_coil"
+//    implementation "dev.chrisbanes.accompanist:accompanist-coil:$compose_utils_chrisbanes_coil"
+//    implementation "io.coil-kt:coil:$compose_utils_coil"
+    implementation "com.google.accompanist:accompanist-coil:0.9.1"
+    implementation "com.google.accompanist:accompanist-insets:0.9.1"
+    implementation "com.google.accompanist:accompanist-pager:0.9.1"
 //    // Paging Compose
     implementation "androidx.paging:paging-compose:$paging_compose_version"
 }
