@@ -1,8 +1,7 @@
 package com.sion.itunes.view.music
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.util.Log
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -18,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -45,6 +45,9 @@ import com.sion.itunes.model.vo.Music
 import com.sion.itunes.state.ErrorItem
 import com.sion.itunes.state.LoadingItem
 import com.sion.itunes.state.LoadingView
+import com.sion.itunes.theme.itemCardColor
+import com.sion.itunes.theme.nameColor
+import com.sion.itunes.theme.shapes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -80,10 +83,10 @@ fun MusicScreen(keyword: String, mainViewModel: MusicViewModel) {
 //                title = { Text(text = "PopularMovies") }
 //            )
 //        },
-        content = {
+            content = {
 //            MusicView(keyword,mainViewModel)
-            MusicList(movies = mainViewModel.search(keyword))
-        }
+                MusicList(movies = mainViewModel.search(keyword))
+            }
     )
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
@@ -93,23 +96,23 @@ fun MusicScreen(keyword: String, mainViewModel: MusicViewModel) {
 @Composable
 fun MusicView(keyword: String, mainViewModel: MusicViewModel) {
     ConstraintLayout(
-        constraintSet = ConstraintSet {
-            val recyclelist = createRefFor("rv_music")
-            val progressIndicator = createRefFor("progress_bar")
-            constrain(recyclelist) {
-                top.linkTo(parent.top, margin = 8.dp)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-            constrain(progressIndicator) {
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        },
-        modifier = Modifier.fillMaxSize()
+            constraintSet = ConstraintSet {
+                val recyclelist = createRefFor("rv_music")
+                val progressIndicator = createRefFor("progress_bar")
+                constrain(recyclelist) {
+                    top.linkTo(parent.top, margin = 8.dp)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+                constrain(progressIndicator) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
+            },
+            modifier = Modifier.fillMaxSize()
     ) {
 //        val guideline = createGuidelineFromStart(0.2f)
 //        val (box1, box2) = createRefs()
@@ -130,12 +133,12 @@ fun MusicView(keyword: String, mainViewModel: MusicViewModel) {
 //                }
 //        )
         MusicList(
-            movies = mainViewModel.search(keyword)
+                movies = mainViewModel.search(keyword)
         )
         CircularProgressIndicator(
-            modifier = Modifier.layoutId("progress_bar"),
-            color = Color.Green,
-            strokeWidth = 2.dp
+                modifier = Modifier.layoutId("progress_bar"),
+                color = Color.Green,
+                strokeWidth = 2.dp
         )
     }
 }
@@ -173,26 +176,26 @@ fun MusicList(movies: Flow<PagingData<Music>>) {
     when (val refreshState = lazyMovieItems.loadState.refresh) {
         is LoadState.Loading -> {
             CircularProgressIndicator(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(16.dp)
-                    .wrapContentWidth(Alignment.CenterHorizontally)
+                    modifier = Modifier.fillMaxWidth()
+                            .padding(16.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
             )
         }
         is LoadState.NotLoading -> {
             Column(modifier = Modifier.fillMaxSize()) {
-                if(lazyMovieItems.itemCount > 0) {
+                if (lazyMovieItems.itemCount > 0) {
                     LazyVerticalGrid(
-                        cells = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(start = 8.dp, bottom = 8.dp),
-                        state = state,
-                        content = {
-                            items(lazyMovieItems.itemCount) { index ->
-                                val music = lazyMovieItems.peek(index)?: return@items
-                                ItemMusic(
-                                    music
-                                )
+                            cells = GridCells.Fixed(2),
+                            contentPadding = PaddingValues(start = 8.dp, bottom = 8.dp),
+                            state = state,
+                            content = {
+                                items(lazyMovieItems.itemCount) { index ->
+                                    val music = lazyMovieItems.peek(index) ?: return@items
+                                    ItemMusic(
+                                            music
+                                    )
+                                }
                             }
-                        }
                     )
                 } else {
 
@@ -201,11 +204,11 @@ fun MusicList(movies: Flow<PagingData<Music>>) {
         }
         is LoadState.Error -> {
             ErrorItem(
-                modifier = Modifier.fillMaxSize(),
-                message = refreshState.toString(),
-                onClickRetry = {
+                    modifier = Modifier.fillMaxSize(),
+                    message = refreshState.toString(),
+                    onClickRetry = {
 //                                retry()
-                }
+                    }
             )
         }
     }
@@ -315,108 +318,139 @@ fun MusicList(movies: Flow<PagingData<Music>>) {
 //}
 
 @Composable
-//fun ItemMusic(item: Music, modifier: Modifier = Modifier, onMovieClicked: (Int) -> Unit = {}) {
-fun ItemMusic(item: Music  ) {
-//    Row(
-//        modifier = Modifier
-//            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
-//            .fillMaxWidth(),
-//        horizontalArrangement = Arrangement.SpaceBetween,
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        TrackNameMusic(
-//            item.artistName,
-//            modifier = Modifier.weight(1f)
-//        )
-////        ImageViewMusic(
-////            BuildConfig.LARGE_IMAGE_URL + movie.backdrop_path,
-////            modifier = Modifier.padding(start = 16.dp).preferredSize(90.dp)
+//fun ItemMusic(item: Music, modifier: Modifier = Modifier, onItemClicked: (Int) -> Unit = {}) {
+fun ItemMusic(item: Music) {
+    Log.d("MusicScreen", "artistName : ${item.artistName}")
+////    Row(
+////        modifier = Modifier
+////            .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+////            .fillMaxWidth(),
+////        horizontalArrangement = Arrangement.SpaceBetween,
+////        verticalAlignment = Alignment.CenterVertically
+////    ) {
+////        TrackNameMusic(
+////            item.artistName,
+////            modifier = Modifier.weight(1f)
 ////        )
+//////        ImageViewMusic(
+//////            BuildConfig.LARGE_IMAGE_URL + movie.backdrop_path,
+//////            modifier = Modifier.padding(start = 16.dp).preferredSize(90.dp)
+//////        )
+////    }
+//    ConstraintLayout(
+//        constraintSet = ConstraintSet {
+//            val rule_cover = createRefFor("iv_cover")
+//            val rule_track_name = createRefFor("tv_track_name")
+//            val rule_artist_name = createRefFor("tv_artist_name")
+//            constrain(rule_cover) {
+//                top.linkTo(parent.top)
+//                bottom.linkTo(parent.bottom)
+//                start.linkTo(parent.start)
+//                end.linkTo(parent.end)
+//            }
+//            constrain(rule_track_name) {
+//                top.linkTo(rule_cover.bottom)
+//                start.linkTo(parent.start)
+//                end.linkTo(parent.end)
+//            }
+//            constrain(rule_artist_name) {
+//                top.linkTo(rule_track_name.bottom)
+//                bottom.linkTo(parent.bottom)
+//                start.linkTo(parent.start)
+//                end.linkTo(parent.end)
+//            }
+//        },
+//        modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
+////                modifier= modifier.fillMaxWidth().wrapContentHeight()
+//    ) {
+//        ImageViewMusic(
+//            item.artworkUrl100,
+//            modifier = Modifier.layoutId("iv_cover"),
+//        )
+//        TrackNameMusic(
+//            item.trackName,
+//            modifier = Modifier.layoutId("tv_track_name"),
+//        )
+//        ArtistNameMusic(
+//            item.artistName,
+//            modifier = Modifier.layoutId("tv_artist_name"),
+//        )
 //    }
-    ConstraintLayout(
-        constraintSet = ConstraintSet {
-            val rule_cover = createRefFor("iv_cover")
-            val rule_track_name = createRefFor("tv_track_name")
-            val rule_artist_name = createRefFor("tv_artist_name")
-            constrain(rule_cover) {
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-            constrain(rule_track_name) {
-                top.linkTo(rule_cover.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-            constrain(rule_artist_name) {
-                top.linkTo(rule_track_name.bottom)
-                bottom.linkTo(parent.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-        },
-        modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
-//                modifier= modifier.fillMaxWidth().wrapContentHeight()
+
+    Box(
+            modifier = Modifier
+                    .wrapContentSize()
+                    .padding(8.dp)
     ) {
-        ImageViewMusic(
-            item.artworkUrl100,
-            modifier = Modifier.layoutId("iv_cover"),
-        )
-        TrackNameMusic(
-            item.trackName,
-            modifier = Modifier.layoutId("tv_track_name"),
-        )
-        ArtistNameMusic(
-            item.artistName,
-            modifier = Modifier.layoutId("tv_artist_name"),
-        )
+        Card(
+                modifier = Modifier
+                        .border(0.5.dp, Color.Gray, shape = MaterialTheme.shapes.small)
+                        .shadow(4.dp),
+                shape = shapes.small,
+                elevation = 8.dp,
+                backgroundColor = itemCardColor
+        ) {
+            // Vertical layout
+            Column(
+                    modifier = Modifier
+//                            .clickable(onClick = onClick)
+                            .wrapContentSize()
+            ) {
+                val contentWidth = 100.dp
+                val contentHeight = 141.dp
+
+                ImageViewMusic(
+                        item.artworkUrl100,
+                        modifier = Modifier
+                                .width(contentWidth)
+                                .height(contentHeight)
+                )
+
+                // Spacer(Modifier.sizeIn(2.dp))
+
+                TrackNameMusic(
+                        item.trackName
+                )
+                ArtistNameMusic(
+                        item.artistName
+                )
+            }
+        }
     }
 }
 
 @Composable
 fun ImageViewMusic(
-    imageUrl: String,
-    modifier: Modifier = Modifier
+        imageUrl: String,
+        modifier: Modifier = Modifier
 ) {
     val tint = if (MaterialTheme.colors.isLight) Color.DarkGray else Color.Gray
     val painter = rememberCoilPainter(request = imageUrl, previewPlaceholder = R.drawable.ic_image)
-//    CoilImage(
-//        data = imageUrl,
-//        modifier = modifier,
-//        fadeIn = true,
-//        contentScale = ContentScale.Crop,
-//        loading = {
-//            Image(ImageVector.vectorResource(id = R.drawable.ic_photo), alpha = 0.45f)
-//        },
-//        error = {
-//            Image(ImageVector.vectorResource(id = R.drawable.ic_broken_image), alpha = 0.45f)
-//        }
-//    )
+
     Image(
-        painter = painter,
-        contentDescription = "",
-        contentScale = ContentScale.FillBounds,
-        modifier = Modifier.fillMaxSize()
+            painter = painter,
+            contentDescription = "",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.fillMaxSize()
     )
     val modifier = Modifier
-        .padding(8.dp)
-        .fillMaxSize()
+            .padding(8.dp)
+            .fillMaxSize()
     when (painter.loadState) {
         is ImageLoadState.Loading -> {
             Image(
-                painter = rememberVectorPainter(image = Icons.Default.Movie),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(tint),
-                modifier = modifier
+                    painter = rememberVectorPainter(image = Icons.Default.Movie),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(tint),
+                    modifier = modifier
             )
         }
         is ImageLoadState.Error -> {
             Image(
-                imageVector = Icons.Filled.BrokenImage,
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(tint),
-                modifier = modifier
+                    imageVector = Icons.Filled.BrokenImage,
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(tint),
+                    modifier = modifier
             )
         }
         else -> {
@@ -426,34 +460,44 @@ fun ImageViewMusic(
 
 @Composable
 fun TrackNameMusic(
-    trackname: String,
-    modifier: Modifier = Modifier
+        trackname: String
 ) {
+    val contentWidth = 100.dp
     Text(
-        modifier = modifier,
-        text = trackname,
-        maxLines = 1,
-        style = MaterialTheme.typography.subtitle2.copy(
-            color = Color.White,
-            letterSpacing = 10.sp,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.W400
-        ),
-        overflow = TextOverflow.Ellipsis
+            modifier = Modifier
+                    .width(contentWidth)
+                    .padding(3.dp),
+            text = trackname,
+            maxLines = 1,
+            color = nameColor,
+            style = MaterialTheme.typography.subtitle2.copy(
+                    color = Color.White,
+                    letterSpacing = 10.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.W400
+            ),
+            overflow = TextOverflow.Ellipsis
     )
 }
 
 @Composable
 fun ArtistNameMusic(
-    artist: String,
-    modifier: Modifier = Modifier
+        artist: String
 ) {
+    val contentWidth = 100.dp
     Text(
-        modifier = modifier,
-        text = artist,
-        maxLines = 1,
-        letterSpacing = 8.sp,
-        style = MaterialTheme.typography.h6,
-        overflow = TextOverflow.Ellipsis
+            modifier = Modifier
+                    .width(contentWidth)
+                    .padding(3.dp),
+            text =  artist,
+            maxLines = 1,
+            color = nameColor,
+            style = MaterialTheme.typography.subtitle2.copy(
+                    color = Color.White,
+                    letterSpacing = 6.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.W400
+            ),
+            overflow = TextOverflow.Ellipsis
     )
 }
