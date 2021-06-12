@@ -188,9 +188,10 @@ dependencies {
 
 //    implementation "dev.chrisbanes.accompanist:accompanist-coil:$compose_utils_chrisbanes_coil"
 //    implementation "io.coil-kt:coil:$compose_utils_coil"
-    implementation "com.google.accompanist:accompanist-coil:0.9.1"
-    implementation "com.google.accompanist:accompanist-insets:0.9.1"
-    implementation "com.google.accompanist:accompanist-pager:0.9.1"
+    implementation "com.google.accompanist:accompanist-coil:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-insets:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-insets-ui:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-pager:$compose_accompanist_version"
 //    // Paging Compose
     implementation "androidx.paging:paging-compose:$paging_compose_version"
 }
