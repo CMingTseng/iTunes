@@ -38,6 +38,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import coil.transform.CircleCropTransformation
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
 import com.sion.itunes.R
@@ -83,10 +84,10 @@ fun MusicScreen(keyword: String, mainViewModel: MusicViewModel) {
 //                title = { Text(text = "PopularMovies") }
 //            )
 //        },
-            content = {
+        content = {
 //            MusicView(keyword,mainViewModel)
-                MusicList(movies = mainViewModel.search(keyword))
-            }
+            MusicList(movies = mainViewModel.search(keyword))
+        }
     )
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
@@ -96,23 +97,23 @@ fun MusicScreen(keyword: String, mainViewModel: MusicViewModel) {
 @Composable
 fun MusicView(keyword: String, mainViewModel: MusicViewModel) {
     ConstraintLayout(
-            constraintSet = ConstraintSet {
-                val recyclelist = createRefFor("rv_music")
-                val progressIndicator = createRefFor("progress_bar")
-                constrain(recyclelist) {
-                    top.linkTo(parent.top, margin = 8.dp)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-                constrain(progressIndicator) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-            },
-            modifier = Modifier.fillMaxSize()
+        constraintSet = ConstraintSet {
+            val recyclelist = createRefFor("rv_music")
+            val progressIndicator = createRefFor("progress_bar")
+            constrain(recyclelist) {
+                top.linkTo(parent.top, margin = 8.dp)
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+            constrain(progressIndicator) {
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+        },
+        modifier = Modifier.fillMaxSize()
     ) {
 //        val guideline = createGuidelineFromStart(0.2f)
 //        val (box1, box2) = createRefs()
@@ -133,12 +134,12 @@ fun MusicView(keyword: String, mainViewModel: MusicViewModel) {
 //                }
 //        )
         MusicList(
-                movies = mainViewModel.search(keyword)
+            movies = mainViewModel.search(keyword)
         )
         CircularProgressIndicator(
-                modifier = Modifier.layoutId("progress_bar"),
-                color = Color.Green,
-                strokeWidth = 2.dp
+            modifier = Modifier.layoutId("progress_bar"),
+            color = Color.Green,
+            strokeWidth = 2.dp
         )
     }
 }
@@ -176,26 +177,26 @@ fun MusicList(movies: Flow<PagingData<Music>>) {
     when (val refreshState = lazyMovieItems.loadState.refresh) {
         is LoadState.Loading -> {
             CircularProgressIndicator(
-                    modifier = Modifier.fillMaxWidth()
-                            .padding(16.dp)
-                            .wrapContentWidth(Alignment.CenterHorizontally)
+                modifier = Modifier.fillMaxWidth()
+                    .padding(16.dp)
+                    .wrapContentWidth(Alignment.CenterHorizontally)
             )
         }
         is LoadState.NotLoading -> {
             Column(modifier = Modifier.fillMaxSize()) {
                 if (lazyMovieItems.itemCount > 0) {
                     LazyVerticalGrid(
-                            cells = GridCells.Fixed(2),
-                            contentPadding = PaddingValues(start = 8.dp, bottom = 8.dp),
-                            state = state,
-                            content = {
-                                items(lazyMovieItems.itemCount) { index ->
-                                    val music = lazyMovieItems.peek(index) ?: return@items
-                                    ItemMusic(
-                                            music
-                                    )
-                                }
+                        cells = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(start = 8.dp, bottom = 8.dp),
+                        state = state,
+                        content = {
+                            items(lazyMovieItems.itemCount) { index ->
+                                val music = lazyMovieItems.peek(index) ?: return@items
+                                ItemMusic(
+                                    music
+                                )
                             }
+                        }
                     )
                 } else {
 
@@ -204,11 +205,11 @@ fun MusicList(movies: Flow<PagingData<Music>>) {
         }
         is LoadState.Error -> {
             ErrorItem(
-                    modifier = Modifier.fillMaxSize(),
-                    message = refreshState.toString(),
-                    onClickRetry = {
+                modifier = Modifier.fillMaxSize(),
+                message = refreshState.toString(),
+                onClickRetry = {
 //                                retry()
-                    }
+                }
             )
         }
     }
@@ -392,9 +393,10 @@ fun ItemMusic(item: Music) {
         ) {
             // Vertical layout
             Column(
-                    modifier = Modifier
-//                            .clickable(onClick = onClick)
-                            .wrapContentSize()
+                modifier = Modifier .wrapContentSize(),
+//                    .clickable(onClick = onClick)
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val contentWidth = 100.dp
                 val contentHeight = 141.dp
@@ -409,10 +411,10 @@ fun ItemMusic(item: Music) {
                 // Spacer(Modifier.sizeIn(2.dp))
 
                 TrackNameMusic(
-                        item.trackName
+                    item.trackName
                 )
                 ArtistNameMusic(
-                        item.artistName
+                    item.artistName
                 )
             }
         }
@@ -421,36 +423,38 @@ fun ItemMusic(item: Music) {
 
 @Composable
 fun ImageViewMusic(
-        imageUrl: String,
-        modifier: Modifier = Modifier
+    imageUrl: String,
+    modifier: Modifier = Modifier
+        .padding(8.dp)
+        .fillMaxSize()
 ) {
     val tint = if (MaterialTheme.colors.isLight) Color.DarkGray else Color.Gray
-    val painter = rememberCoilPainter(request = imageUrl, previewPlaceholder = R.drawable.ic_image)
+    val painter = rememberCoilPainter(request = imageUrl,
+//        requestBuilder = {
+//        transformations(CircleCropTransformation()) },
+        previewPlaceholder = R.drawable.ic_image)
 
     Image(
-            painter = painter,
-            contentDescription = "",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
+        painter = painter,
+        contentDescription = "",
+        contentScale = ContentScale.FillBounds,
+        modifier = Modifier.fillMaxSize()
     )
-    val modifier = Modifier
-            .padding(8.dp)
-            .fillMaxSize()
     when (painter.loadState) {
         is ImageLoadState.Loading -> {
             Image(
-                    painter = rememberVectorPainter(image = Icons.Default.Movie),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(tint),
-                    modifier = modifier
+                painter = rememberVectorPainter(image = Icons.Default.Movie),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(tint),
+                modifier = modifier
             )
         }
         is ImageLoadState.Error -> {
             Image(
-                    imageVector = Icons.Filled.BrokenImage,
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(tint),
-                    modifier = modifier
+                imageVector = Icons.Filled.BrokenImage,
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(tint),
+                modifier = modifier
             )
         }
         else -> {
@@ -460,44 +464,44 @@ fun ImageViewMusic(
 
 @Composable
 fun TrackNameMusic(
-        trackname: String
+    trackname: String
 ) {
     val contentWidth = 100.dp
     Text(
-            modifier = Modifier
-                    .width(contentWidth)
-                    .padding(3.dp),
-            text = trackname,
-            maxLines = 1,
-            color = nameColor,
-            style = MaterialTheme.typography.subtitle2.copy(
-                    color = Color.White,
-                    letterSpacing = 10.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.W400
-            ),
-            overflow = TextOverflow.Ellipsis
+        modifier = Modifier
+            .width(contentWidth)
+            .padding(3.dp),
+        text = trackname,
+        maxLines = 1,
+        color = nameColor,
+        style = MaterialTheme.typography.subtitle2.copy(
+            color = Color.White,
+            letterSpacing = 10.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.W400
+        ),
+        overflow = TextOverflow.Ellipsis
     )
 }
 
 @Composable
 fun ArtistNameMusic(
-        artist: String
+    artist: String
 ) {
     val contentWidth = 100.dp
     Text(
-            modifier = Modifier
-                    .width(contentWidth)
-                    .padding(3.dp),
-            text =  artist,
-            maxLines = 1,
-            color = nameColor,
-            style = MaterialTheme.typography.subtitle2.copy(
-                    color = Color.White,
-                    letterSpacing = 6.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.W400
-            ),
-            overflow = TextOverflow.Ellipsis
+        modifier = Modifier
+            .width(contentWidth)
+            .padding(3.dp),
+        text = artist,
+        maxLines = 1,
+        color = nameColor,
+        style = MaterialTheme.typography.subtitle2.copy(
+            color = Color.White,
+            letterSpacing = 6.sp,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.W400
+        ),
+        overflow = TextOverflow.Ellipsis
     )
 }
