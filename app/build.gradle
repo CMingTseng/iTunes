@@ -188,10 +188,20 @@ dependencies {
 
 //    implementation "dev.chrisbanes.accompanist:accompanist-coil:$compose_utils_chrisbanes_coil"
 //    implementation "io.coil-kt:coil:$compose_utils_coil"
+    implementation "com.google.accompanist:accompanist-appcompat-theme:$compose_accompanist_version"
     implementation "com.google.accompanist:accompanist-coil:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-flowlayout:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-glide:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-imageloading-core:$compose_accompanist_version"
+
     implementation "com.google.accompanist:accompanist-insets:$compose_accompanist_version"
     implementation "com.google.accompanist:accompanist-insets-ui:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-pager-indicators:$compose_accompanist_version"
     implementation "com.google.accompanist:accompanist-pager:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-placeholder:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-placeholder-material:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-swiperefresh:$compose_accompanist_version"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$compose_accompanist_version"
 //    // Paging Compose
     implementation "androidx.paging:paging-compose:$paging_compose_version"
 }
